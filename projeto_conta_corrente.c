@@ -1,125 +1,105 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <conio.h>
 
-void limpar_tela() {
-#ifdef _WIN32
-    system("cls");
-#else
-    system("clear");
-#endif
-}
-
-void pausar_tela() {
-    printf("\nPressione Enter para continuar...");
-    getchar();
-}
-
-void consultar_saldo() {
-    limpar_tela();
+typedef struct {
     char nome[50];
     int numero_conta;
     float saldo;
+} Conta;
+Conta conta;
 
-    printf("=== Consultar Saldo ===\n\n");
+void inicializar_conta() {
+    printf("=== Inicializacao da Conta ===\n\n");
+
     printf("Informe o nome do correntista: ");
-    getchar();
-    fgets(nome, sizeof(nome), stdin);
-    nome[strcspn(nome, "\n")] = 0;
+    fgets(conta.nome, sizeof(conta.nome), stdin);
+    conta.nome[strcspn(conta.nome, "\n")] = 0;
 
     printf("Informe o numero da conta: ");
-    scanf("%d", &numero_conta);
+    scanf("%d", &conta.numero_conta);
 
-    limpar_tela();
-    printf("=== Informacoes da Conta ===\n\n");
-    printf("Correntista: %s\n", nome);
-    printf("Numero da Conta: %d\n", numero_conta);
-    printf("Saldo Disponivel: R$ %.2f\n", saldo);
+    printf("Informe o valor inicial de deposito (pode ser zero): R$ ");
+    scanf("%f", &conta.saldo);
 
-    pausar_tela();
-}
-
-void depositar() {
-    limpar_tela();
-    char nome[50];
-    int numero_conta;
-    float saldo = 0, valor;
-
-    printf("=== Depositar ===\n\n");
-    printf("Informe o nome do correntista: ");
-    getchar();
-    fgets(nome, sizeof(nome), stdin);
-    nome[strcspn(nome, "\n")] = 0;
-
-    printf("Informe o numero da conta: ");
-    scanf("%d", &numero_conta);
-
-    printf("Informe o valor para deposito: R$ ");
-    scanf("%f", &valor);
-
-    if (valor > 0) {
-        saldo += valor;
-        printf("\nDepósito concluído com sucesso!\n");
-        printf("Novo saldo: R$ %.2f\n", saldo);
-    } else {
-        printf("\nValor inválido. O depósito deve ser maior que zero.\n");
-    }
-
-    pausar_tela();
-}
-
-void sacar() {
-    limpar_tela();
-    char nome[50];
-    int numero_conta;
-    float saldo, valor;
-
-    printf("=== Sacar ===\n\n");
-    printf("Informe o nome do correntista: ");
-    getchar();
-    fgets(nome, sizeof(nome), stdin);
-    nome[strcspn(nome, "\n")] = 0;
-
-    printf("Informe o numero da conta: ");
-    scanf("%d", &numero_conta);
-
-    printf("Informe o valor para saque: R$ ");
-    scanf("%f", &valor);
-
-    if (valor > 0 && valor <= saldo) {
-        saldo -= valor;
-        printf("\nSaque realizado com sucesso! Novo saldo: R$ %.2f\n", saldo);
-    } else if (valor > saldo) {
-        printf("\nSaldo insuficiente para realizar o saque.\n");
-    } else {
-        printf("\nValor inválido. O saque deve ser maior que zero.\n");
-    }
-
-    pausar_tela();
+    printf("\nConta criada com sucesso!\n");
+    printf("Pressione qualquer tecla para continuar...");
+    getch();
 }
 
 void exibir_menu() {
-    printf("=== Menu da Conta Corrente ===\n\n");
+    printf("\n=== Menu da Conta Corrente ===\n\n");
     printf("1 - Consultar Saldo\n");
     printf("2 - Depositar\n");
     printf("3 - Sacar\n");
     printf("4 - Sair\n");
-    printf("\nEscolha uma opcao: ");
+}
+
+void consultar_saldo() {
+    system("cls || clear");
+    printf("=== Consultar Saldo ===\n\n");
+    printf("Correntista: %s\n", conta.nome);
+    printf("Numero da Conta: %d\n", conta.numero_conta);
+    printf("Saldo Disponivel: R$ %.2f\n", conta.saldo);
+    printf("\nPressione qualquer tecla para continuar...");
+    getch();
+}
+
+void depositar() {
+    system("cls || clear");
+    float valor;
+
+    printf("=== Depositar ===\n\n");
+    printf("Informe o valor para deposito: R$ ");
+    scanf("%f", &valor);
+
+    if (valor > 0) {
+        conta.saldo += valor;
+        printf("\nDeposito realizado com sucesso!\n");
+        printf("Novo saldo: R$ %.2f\n", conta.saldo);
+    } else {
+        printf("\nValor invalido. O deposito deve ser maior que zero.\n");
+    }
+    printf("\nPressione qualquer tecla para continuar...");
+    getch();
+}
+
+void sacar() {
+    system("cls || clear");
+    float valor;
+
+    printf("=== Sacar ===\n\n");
+    printf("Informe o valor para saque: R$ ");
+    scanf("%f", &valor);
+
+    if (valor > 0 && valor <= conta.saldo) {
+        conta.saldo -= valor;
+        printf("\nSaque realizado com sucesso!\n");
+        printf("Novo saldo: R$ %.2f\n", conta.saldo);
+    } else if (valor > conta.saldo) {
+        printf("\nSaldo insuficiente para realizar o saque.\n");
+    } else {
+        printf("\nValor invalido. O saque deve ser maior que zero.\n");
+    }
+    printf("\nPressione qualquer tecla para continuar...");
+    getch();
 }
 
 int main() {
     int opcao;
+    inicializar_conta();
 
     do {
-        limpar_tela();
+        system("cls || clear");
         exibir_menu();
+        printf("\nEscolha uma opcao: ");
 
         if (scanf("%d", &opcao) != 1) {
-            printf("\nEntrada inválida. Tente novamente!\n");
-            while (getchar() != '\n'); // Limpa o buffer
+            printf("\nEntrada invalida. Tente novamente!\n");
+            while (getchar() != '\n');
             continue;
         }
-
         switch (opcao) {
             case 1:
                 consultar_saldo();
@@ -131,15 +111,15 @@ int main() {
                 sacar();
                 break;
             case 4:
-                limpar_tela();
-                printf("\nObrigado por utilizar o sistema. Até logo!\n");
-                return 0;
+                system("cls || clear");
+                printf("\nObrigado por utilizar o sistema. Ate logo!\n");
+                exit(0);
             default:
-                printf("\nOpção inválida. Tente novamente!\n");
-                pausar_tela();
+                printf("\nOpcao invalida. Tente novamente!\n");
+                printf("\nPressione qualquer tecla para continuar...");
+                getch();
                 break;
         }
     } while (1);
-
     return 0;
 }
